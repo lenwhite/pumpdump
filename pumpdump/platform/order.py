@@ -46,7 +46,7 @@ class Order(BaseModel):
     size: Decimal
     side: Side
     order_type: OrderType
-    canceled: Optional[datetime]
+    canceled: Optional[datetime] = None
     trades: List[Trade] = []
     order_id: str = Field(default_factory=uuid_hex)
     fees: dict = DefaultDict(default_factory=Decimal)
