@@ -53,7 +53,6 @@ class RandomWalk(threading.Thread):
                 else:
                     reference_price = self.initial_price
 
-                print(f"reference={reference_price}, side={side}, ob={ob}")
                 size = self.random.weibullvariate(self.volume, 1)
 
                 if side == Side.buy:
