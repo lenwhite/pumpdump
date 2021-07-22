@@ -4,7 +4,7 @@ from decimal import Decimal
 from pydantic.fields import Field
 from pydantic.main import BaseModel
 
-from mock_trading_platform.platform.model_utils import static_check_init_args, uuid_hex
+from mock_trading_platform.model_utils import static_check_init_args, uuid_hex
 
 
 @static_check_init_args

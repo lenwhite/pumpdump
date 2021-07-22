@@ -19,10 +19,14 @@ def engine():
 @pytest.fixture
 def engine_with_orders(engine: TradingEngine):
     for i in range(10):
-        engine.add_limit_order(LimitOrder(size=100, side="buy", price=100 - i))
+        engine.add_limit_order(
+            LimitOrder(symbol="FOOBAR", size=100, side="buy", price=100 - i)
+        )
 
     for i in range(10):
-        engine.add_limit_order(LimitOrder(size=100, side="sell", price=110 + i))
+        engine.add_limit_order(
+            LimitOrder(symbol="FOOBAR", size=100, side="sell", price=110 + i)
+        )
 
     return engine
 
@@ -35,6 +39,7 @@ def test_limit_orders(engine_with_orders: TradingEngine):
 
     assert len(ob.bids) == 10
     assert len(ob.asks) == 10
+    assert ob.symbol == "FOOBAR"
 
     for i in range(10):
         assert ob.bids[i].price == 100 - i
@@ -47,7 +52,9 @@ def test_limit_orders(engine_with_orders: TradingEngine):
 
 def test_crossing_order(engine_with_orders: TradingEngine):
     engine = engine_with_orders
-    order = engine.add_limit_order(LimitOrder(size=200, side="buy", price="110.5"))
+    order = LimitOrder(symbol="FOOBAR", size=200, side="buy", price="110.5")
+    engine.add_limit_order(order)
+    order = engine.order_status(order.order_id)
 
     ob = engine.order_book
     print(order)

@@ -3,10 +3,9 @@ from datetime import datetime
 from decimal import Decimal
 from typing import DefaultDict, Generic, List, Optional, TypeVar
 
-from pydantic import BaseModel
-from pydantic.fields import Field
+from pydantic import BaseModel, Field, validator
 
-from mock_trading_platform.platform.model_utils import static_check_init_args, uuid_hex
+from mock_trading_platform.model_utils import static_check_init_args, uuid_hex
 from mock_trading_platform.platform.trade import Trade
 
 
@@ -43,15 +42,16 @@ class OrderType(str, enum.Enum):
 
 @static_check_init_args
 class Order(BaseModel):
+    symbol: str
     size: Decimal
-    order_type: OrderType
     side: Side
+    order_type: OrderType
     canceled: Optional[datetime]
     trades: List[Trade] = []
     order_id: str = Field(default_factory=uuid_hex)
     fees: dict = DefaultDict(default_factory=Decimal)
     create_time: datetime = Field(default_factory=datetime.utcnow)
-    user_id: str = Field(default_factory=uuid_hex)
+    user_id: Optional[str] = None
     order_tag: Optional[str] = None
 
     @property
@@ -66,10 +66,22 @@ class Order(BaseModel):
     def completed(self):
         return self.dealt == self.size
 
+    @validator("size")
+    def size_must_gte_zero(cls, v):
+        if v <= 0:
+            raise ValueError("must be greater than zero")
+        return v
+
 
 @static_check_init_args
 class PricedOrder(Order):
     price: Decimal = Field()
+
+    @validator("price")
+    def price_must_gte_zero(cls, v):
+        if v <= 0:
+            raise ValueError("must be greater than zero")
+        return v
 
 
 @static_check_init_args

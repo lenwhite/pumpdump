@@ -2,48 +2,23 @@ import threading
 from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
-from typing import Dict, List, Optional, Sequence, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from sortedcontainers import SortedList
 
-from mock_trading_platform import config
-from mock_trading_platform.platform.order import (
-    InvalidSideException,
-    LimitOrder,
-    Order,
-    PricedOrder,
-    Side,
+from mock_trading_platform import PlatformConfig, default_config
+
+from .exceptions import (
+    InvalidPricePrecision,
+    InvalidSizePrecision,
+    OrderAlreadyCanceled,
+    OrderAlreadyCompleted,
+    OrderNotFound,
+    OrderTooSmall,
 )
-from mock_trading_platform.platform.order_book import OrderBook, PriceLevel
-from mock_trading_platform.platform.trade import Trade
-
-
-class TradingEngineException(Exception):
-    pass
-
-
-class OrderTooSmall(TradingEngineException):
-    pass
-
-
-class InvalidPricePrecision(TradingEngineException):
-    pass
-
-
-class InvalidSizePrecision(TradingEngineException):
-    pass
-
-
-class OrderAlreadyCanceled(TradingEngineException):
-    pass
-
-
-class OrderAlreadyCompleted(TradingEngineException):
-    pass
-
-
-class OrderNotFound(TradingEngineException):
-    pass
+from .order import InvalidSideException, LimitOrder, Order, PricedOrder, Side
+from .order_book import OrderBook, PriceLevel
+from .trade import Trade
 
 
 class Bids:
@@ -126,7 +101,8 @@ class Asks:
 
 
 class TradingEngine:
-    def __init__(self, symbol) -> None:
+    def __init__(self, symbol, config: Optional[PlatformConfig] = None) -> None:
+        self.config = config or default_config
         self.symbol = symbol
 
         self._open_orders: Dict[str, Order] = {}
@@ -141,29 +117,29 @@ class TradingEngine:
     @property
     def price_tick(self):
         try:
-            return config.symbol_configs[self.symbol].price_tick
+            return self.config.symbol_configs[self.symbol].price_tick
         except KeyError:
-            raise config.UndefinedSymbolConfig
+            raise self.config.UndefinedSymbolConfig
 
     @property
     def size_tick(self):
         try:
-            return config.symbol_configs[self.symbol].size_tick
+            return self.config.symbol_configs[self.symbol].size_tick
         except KeyError:
-            raise config.UndefinedSymbolConfig
+            raise self.config.UndefinedSymbolConfig
 
     @property
     def min_size(self):
         try:
-            return config.symbol_configs[self.symbol].min_size
+            return self.config.symbol_configs[self.symbol].min_size
         except KeyError:
-            raise config.UndefinedSymbolConfig
+            raise self.config.UndefinedSymbolConfig
 
     @property
     def order_book(self):
         return OrderBook(symbol=self.symbol, bids=self._bids.book, asks=self._asks.book)
 
-    def order(self, order_id):
+    def order_status(self, order_id):
         order = self._open_orders.get(order_id) or self._completed_orders.get(order_id)
         if not order:
             raise OrderNotFound
@@ -178,7 +154,7 @@ class TradingEngine:
         if order.price.quantize(self.size_tick) != order.price:
             raise InvalidPricePrecision
 
-    def add_limit_order(self, order: LimitOrder) -> LimitOrder:
+    def add_limit_order(self, order: LimitOrder) -> List[Tuple[Order, Trade]]:
         if order.side == Side.buy:
             match_against = self._asks
             insert_into = self._bids
@@ -188,26 +164,30 @@ class TradingEngine:
         else:
             raise InvalidSideException
 
+        order_trades: List[Tuple[Order, Trade]] = []
+
         while True:
             best_match = match_against.best
             if best_match is None:
                 insert_into.insert(order)
-                return order
+                return order_trades
             trade = self._match_limit_order(order, best_match)
             if not trade:
                 insert_into.insert(order)
-                return order
+                return order_trades
 
             order.trades.append(trade)
             best_match.trades.append(trade)
             self._trades.append(trade)
+            order_trades.append((order, trade))
+            order_trades.append((best_match, trade))
 
             if best_match.completed:
                 match_against.pop()
             if order.completed:
-                return order
+                return order_trades
 
-    def cancel_order(self, order_id) -> LimitOrder:
+    def cancel_order(self, order_id: str) -> Order:
         try:
             order = self._open_orders.pop(order_id)
             order.canceled = datetime.utcnow()
@@ -222,6 +202,13 @@ class TradingEngine:
 
             else:
                 raise OrderNotFound
+
+    def cancel_all(self, user_id: Optional[str] = None) -> List[Order]:
+        return [
+            self.cancel_order(order_id)
+            for order_id, order in tuple(self._open_orders.items())
+            if order.user_id == user_id
+        ]
 
     def _match_limit_order(
         self, taker_order: PricedOrder, maker_order: PricedOrder
