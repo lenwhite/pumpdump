@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "pumpdump"
 version = "0.1.0"
-description = "A in-memory trading platform designed for testing integrations with actual trading platforms"
+description = "In-memory trading platform for testing purposes"
 authors = ["len <lenwhite@users.noreply.github.com>"]
 license = "MIT"
 
