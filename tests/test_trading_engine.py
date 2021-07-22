@@ -2,8 +2,8 @@ from decimal import Decimal
 
 import pytest
 
-from mock_trading_platform.Platform.Order import LimitOrder
-from mock_trading_platform.Platform.TradingEngine import TradingEngine
+from mock_trading_platform.platform.order import LimitOrder
+from mock_trading_platform.platform.trading_engine import TradingEngine
 
 
 def test_default_engine():

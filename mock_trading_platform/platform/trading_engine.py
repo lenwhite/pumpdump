@@ -6,16 +6,16 @@ from typing import Dict, List, Optional, Sequence, Union
 
 from sortedcontainers import SortedList
 
-from mock_trading_platform.Config import config
-from mock_trading_platform.Platform.Order import (
+from mock_trading_platform import config
+from mock_trading_platform.platform.order import (
     InvalidSideException,
     LimitOrder,
     Order,
     PricedOrder,
     Side,
 )
-from mock_trading_platform.Platform.OrderBook import OrderBook, PriceLevel
-from mock_trading_platform.Platform.Trade import Trade
+from mock_trading_platform.platform.order_book import OrderBook, PriceLevel
+from mock_trading_platform.platform.trade import Trade
 
 
 class TradingEngineException(Exception):

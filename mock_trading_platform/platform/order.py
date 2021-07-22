@@ -1,13 +1,13 @@
 import enum
-from datetime import date, datetime
+from datetime import datetime
 from decimal import Decimal
-from typing import DefaultDict, Generic, List, Optional, TypeVar, Union
+from typing import DefaultDict, Generic, List, Optional, TypeVar
 
 from pydantic import BaseModel
 from pydantic.fields import Field
 
-from mock_trading_platform.Platform.model_utils import static_check_init_args, uuid_hex
-from mock_trading_platform.Platform.Trade import Trade
+from mock_trading_platform.platform.model_utils import static_check_init_args, uuid_hex
+from mock_trading_platform.platform.trade import Trade
 
 
 class InvalidSideException(Exception):

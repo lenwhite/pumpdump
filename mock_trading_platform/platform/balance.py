@@ -5,7 +5,7 @@ from typing import Dict
 from pydantic import BaseModel
 from pydantic.fields import Field
 
-from mock_trading_platform.Platform.model_utils import static_check_init_args, uuid_hex
+from mock_trading_platform.platform.model_utils import static_check_init_args, uuid_hex
 
 
 @static_check_init_args
@@ -20,6 +20,7 @@ class AssetBalance(BaseModel):
 
 class BalanceData(BaseModel):
     __root__: Dict[str, AssetBalance]
+
 
 @static_check_init_args
 class Balance(BaseModel):

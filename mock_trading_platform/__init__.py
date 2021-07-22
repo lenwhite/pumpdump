@@ -1,0 +1,1 @@
+from mock_trading_platform._config import config

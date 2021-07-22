@@ -5,10 +5,6 @@ description = "A in-memory trading platform designed for testing integrations wi
 authors = ["len <lenwhite@users.noreply.github.com>"]
 license = "MIT"
 
-[tool.isort]
-profile = "black"
-known_first_party = "mock_trading_platform"
-
 [tool.poetry.dependencies]
 python = "^3.7"
 fastapi = "^0.66.1"
@@ -26,9 +22,30 @@ flake8-black = "^0.2.3"
 flake8-bugbear = "^21.4.3"
 pylint = "^2.9.4"
 
-[tool.pytest.ini_options]
-addopts = "--cov=mock_trading_platform"
-
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+known_first_party = "mock_trading_platform"
+
+[tool.pytest.ini_options]
+addopts = "--cov=mock_trading_platform"
+
+[tool.flakehell]
+extended_default_ignore=[]  # temporary, remove when flakehell fixes compatibility issue
+exclude = [".*", "__pycache__", "env"]
+iinclude = ["altonomy"]
+format = "grouped"
+max_line_length = 88
+show_source = true
+max_complexity = 10
+
+[tool.flakehell.plugins]
+pycodestyle = ["+*", "-E203", "-E266", "-E501", "-W503"]
+pyflakes = ["+*"]
+pylint = ["+*"]
+mccabe = ["+*"]
+flake8-black = ["+*"]
+flake8-isort = ["+*"]
