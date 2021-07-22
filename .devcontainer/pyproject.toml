@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "altonomy-signing-engine"
+version = "0.4.0"
+description = ""
+authors = ["len <lenwhite@users.noreply.github.com>"]
+packages = [
+    { include = "altonomy/signing" },
+]
+
+[[tool.poetry.source]]
+name = "altonomy"
+url = "https://pypi.altono.me"
+secondary = true
+
+[tool.poetry.dependencies]
+python = "^3.7"
+cachetools = "^4.2.2"
+pydantic = "^1.8.2"
+fastapi = "^0.66.0"
+uvicorn = "^0.14.0"
+loguru = "^0.5.3"
+requests = "^2.25.1"
+hvac = "^0.11"
+toml = "^0.10.2"
+
+[tool.poetry.dev-dependencies]
+black = "^21.6b0"
+pytest = "^6.2.4"
+pytest-cov = "^2.12.1"
+isort = "^5.9.2"
+flake8 = "^3.9.2"
+flakehell = "^0.9.0"
+pylint = "^2.9.3"
+flake8-isort = "^4.0.0"
+flake8-black = "^0.2.3"
+flake8-bugbear = "^21.4.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+known_first_party = "altonomy.signing"
+
+[tool.flakehell]
+extended_default_ignore=[]  # temporary, remove when flakehell fixes compatibility issue
+exclude = [".*", "__pycache", "env"]
+iinclude = ["altonomy"]
+format = "grouped"
+max_line_length = 88
+show_source = true
+max_complexity = 10
+
+[tool.flakehell.plugins]
+pycodestyle = ["+*", "-E203", "-E266", "-E501", "-W503"]
+pyflakes = ["+*"]
+pylint = ["+*"]
+mccabe = ["+*"]
+flake8-black = ["+*"]
+flake8-isort = ["+*"]
