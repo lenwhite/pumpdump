@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from sortedcontainers import SortedList
 
-from mock_trading_platform import PlatformConfig, default_config
+from pumpdump import PlatformConfig, default_config
 
 from .exceptions import (
     InvalidPricePrecision,

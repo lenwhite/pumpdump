@@ -2,8 +2,8 @@ import time
 
 import pytest
 
-from mock_trading_platform.actor.random_walk import RandomWalk
-from mock_trading_platform.platform.platform import Platform
+from pumpdump.actor.random_walk import RandomWalk
+from pumpdump.platform.platform import Platform
 
 
 @pytest.fixture
@@ -23,6 +23,6 @@ def test_random_walk_run(random_walk: RandomWalk, platform: Platform):
 
     ob = platform.order_book("FOOBAR")
     assert not random_walk.exception
-    
+
     assert ob.bids
     assert ob.asks

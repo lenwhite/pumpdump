@@ -5,8 +5,8 @@ from typing import DefaultDict, Generic, List, Optional, TypeVar
 
 from pydantic import BaseModel, Field, validator
 
-from mock_trading_platform.model_utils import static_check_init_args, uuid_hex
-from mock_trading_platform.platform.trade import Trade
+from pumpdump.model_utils import static_check_init_args, uuid_hex
+from pumpdump.platform.trade import Trade
 
 
 class InvalidSideException(Exception):

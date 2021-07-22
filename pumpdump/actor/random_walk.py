@@ -4,8 +4,8 @@ import time
 from decimal import Decimal
 from typing import Any, Optional, Union
 
-from mock_trading_platform.platform.order import LimitOrder, Side
-from mock_trading_platform.platform.platform import Platform
+from pumpdump.platform.order import LimitOrder, Side
+from pumpdump.platform.platform import Platform
 
 
 class RandomWalk(threading.Thread):

@@ -1,7 +1,7 @@
 import pytest
 
-from mock_trading_platform.platform.order import LimitOrder
-from mock_trading_platform.platform.platform import Platform
+from pumpdump.platform.order import LimitOrder
+from pumpdump.platform.platform import Platform
 
 
 @pytest.fixture

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mock-trading-platform"
+name = "pumpdump"
 version = "0.1.0"
 description = "A in-memory trading platform designed for testing integrations with actual trading platforms"
 authors = ["len <lenwhite@users.noreply.github.com>"]
@@ -7,9 +7,9 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-fastapi = "^0.66.1"
+fastapi = {version="^0.66.1", optional=true}
 sortedcontainers = "^2.4.0"
-pytest-cov = "^2.12.1"
+pydantic = "^1.8.2"
 
 [tool.poetry.dev-dependencies]
 flakehell = "^0.9.0"
@@ -21,6 +21,7 @@ flake8-isort = "^4.0.0"
 flake8-black = "^0.2.3"
 flake8-bugbear = "^21.4.3"
 pylint = "^2.9.4"
+pytest-cov = "^2.12.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -28,10 +29,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
 profile = "black"
-known_first_party = "mock_trading_platform"
+known_first_party = "pumpdump"
 
 [tool.pytest.ini_options]
-addopts = "--cov=mock_trading_platform"
+addopts = "--cov=pumpdump"
 
 [tool.flakehell]
 extended_default_ignore=[]  # temporary, remove when flakehell fixes compatibility issue
@@ -49,3 +50,6 @@ pylint = ["+*"]
 mccabe = ["+*"]
 flake8-black = ["+*"]
 flake8-isort = ["+*"]
+
+[tool.poetry.extras]
+fastapi= ["fastapi"]

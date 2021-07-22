@@ -5,7 +5,7 @@ from typing import List
 from pydantic import BaseModel
 from pydantic.fields import Field
 
-from mock_trading_platform.model_utils import static_check_init_args
+from pumpdump.model_utils import static_check_init_args
 
 
 @static_check_init_args

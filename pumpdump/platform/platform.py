@@ -2,11 +2,11 @@ import threading
 from collections import defaultdict
 from typing import Dict, List, Mapping, Optional
 
-from mock_trading_platform import PlatformConfig, SymbolConfig, default_config
-from mock_trading_platform.platform.balance import AssetBalance, Balance, BalanceData
-from mock_trading_platform.platform.order import Order, OrderType, PricedOrder, Side
-from mock_trading_platform.platform.trade import Trade
-from mock_trading_platform.platform.trading_engine import TradingEngine
+from pumpdump import PlatformConfig, SymbolConfig, default_config
+from pumpdump.platform.balance import AssetBalance, Balance, BalanceData
+from pumpdump.platform.order import Order, OrderType, PricedOrder, Side
+from pumpdump.platform.trade import Trade
+from pumpdump.platform.trading_engine import TradingEngine
 
 from .exceptions import (
     InsufficientBalance,

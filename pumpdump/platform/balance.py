@@ -5,7 +5,7 @@ from typing import Dict, Iterator, MutableMapping
 from pydantic import BaseModel
 from pydantic.fields import Field
 
-from mock_trading_platform.model_utils import static_check_init_args, uuid_hex
+from pumpdump.model_utils import static_check_init_args, uuid_hex
 
 
 @static_check_init_args
