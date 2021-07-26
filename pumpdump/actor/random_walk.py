@@ -75,5 +75,4 @@ class RandomWalk(threading.Thread):
         ).quantize(exp=symbol_config.price_tick)
 
         order = LimitOrder(symbol=self.symbol, size=size, side=side, price=price)
-        print(order)
         self.platform.add_order(order)
