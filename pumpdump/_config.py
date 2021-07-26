@@ -65,3 +65,6 @@ class PlatformConfig(BaseModel):
 
     class UndefinedSymbolConfig(Exception):
         pass
+
+
+default_config = PlatformConfig()

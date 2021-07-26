@@ -36,45 +36,44 @@ class RandomWalk(threading.Thread):
 
     def run(self):
         try:
-            symbol_configs = self.platform.symbol_configs
-            symbol_config = symbol_configs[self.symbol]
             while not self.stop_flag.is_set():
-                ob = self.platform.order_book(self.symbol)
-                side = self.random.choice((Side.buy, Side.sell))
-
-                if side == Side.buy and ob.bids:
-                    reference_price = float(ob.bids[0].price)
-                elif side == Side.buy and ob.asks:
-                    reference_price = float(ob.asks[0].price) / (self.variance ** 5)
-                elif side == Side.sell and ob.asks:
-                    reference_price = float(ob.asks[0].price)
-                elif side == Side.sell and ob.bids:
-                    reference_price = float(ob.bids[0].price) * (self.variance ** 5)
-                else:
-                    reference_price = self.initial_price
-
-                size = self.random.weibullvariate(self.volume, 1)
-
-                if side == Side.buy:
-                    reference_price *= self.variance ** ((self.volume / size - 1) / 10)
-                elif side == Side.sell:
-                    reference_price *= self.variance ** ((size / self.volume - 1) / 10)
-
-                size = Decimal(size).quantize(exp=symbol_config.size_tick)
-                if size < symbol_config.min_size:
-                    continue
-
-                price = Decimal(
-                    self.random.normalvariate(1, self.variance - 1) * reference_price
-                ).quantize(exp=symbol_config.price_tick)
-
-                order = LimitOrder(
-                    symbol=self.symbol, size=size, side=side, price=price
-                )
-                print(order)
-                self.platform.add_order(order)
-
+                self.upkeep()
                 time.sleep(self.run_interval)
         except Exception as e:
             self.exception = e
             raise
+
+    def upkeep(self):
+        symbol_config = self.platform.symbol_configs[self.symbol]
+        ob = self.platform.order_book(self.symbol)
+        side = self.random.choice((Side.buy, Side.sell))
+
+        if side == Side.buy and ob.bids:
+            reference_price = float(ob.bids[0].price)
+        elif side == Side.buy and ob.asks:
+            reference_price = float(ob.asks[0].price) / (self.variance ** 5)
+        elif side == Side.sell and ob.asks:
+            reference_price = float(ob.asks[0].price)
+        elif side == Side.sell and ob.bids:
+            reference_price = float(ob.bids[0].price) * (self.variance ** 5)
+        else:
+            reference_price = self.initial_price
+
+        size = self.random.weibullvariate(self.volume, 1)
+
+        if side == Side.buy:
+            reference_price *= self.variance ** ((self.volume / size - 1) / 10)
+        elif side == Side.sell:
+            reference_price *= self.variance ** ((size / self.volume - 1) / 10)
+
+        size = Decimal(size).quantize(exp=symbol_config.size_tick)
+        if size < symbol_config.min_size:
+            return
+
+        price = Decimal(
+            self.random.normalvariate(1, self.variance - 1) * reference_price
+        ).quantize(exp=symbol_config.price_tick)
+
+        order = LimitOrder(symbol=self.symbol, size=size, side=side, price=price)
+        print(order)
+        self.platform.add_order(order)
