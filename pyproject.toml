@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pumpdump"
-version = "0.1.4"
+version = "0.1.5"
 description = "In-memory trading platform for testing purposes"
 authors = ["len <lenwhite@users.noreply.github.com>"]
 license = "MIT"
