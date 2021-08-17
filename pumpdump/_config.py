@@ -18,6 +18,7 @@ class SymbolConfig(BaseModel):
     quote: Optional[str] = Field(
         default=None, description="quote currency/asset of the symbol"
     )
+    initial_book: Optional[Decimal] = None
 
 
 @static_check_init_args
